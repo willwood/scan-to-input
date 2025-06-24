@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
   <title>Inventory List</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+    rel="stylesheet">
 </head>
+
 <body>
   <main class="container my-5">
     <h1 class="mb-3">📦 Inventory List</h1>
     <p class="lead">Scan barcodes to automatically add them to the inventory list. Each scanned item creates a new input row. You can remove rows manually.</p>
 
     <!-- Hidden scanner input -->
-    <input type="text" id="scan-box" data-scan-box class="visually-hidden" autocomplete="off">
+    <input type="text"
+      id="scan-box"
+      data-scan-box
+      class="visually-hidden"
+      autocomplete="off">
 
     <!-- Scanned items list -->
     <form id="inventory-form">
-      <div id="scanned-items" class="input-group"></div>
-      <button type="submit" class="btn btn-primary mt-3">Submit Inventory To Database</button>
+      <div id="scanned-items"
+        class="input-group"></div>
+      <button type="submit"
+        class="btn btn-primary mt-3">Submit Inventory To Database</button>
     </form>
   </main>
 
-  <script src="../scan-detect.js"></script>
+  <script src="../scan-to-input.js"></script>
   <script>
     let count = 0;
 
@@ -74,4 +84,5 @@
     });
   </script>
 </body>
+
 </html>

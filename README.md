@@ -1,6 +1,6 @@
 # Scan-To-Input
 
-**Scan-To-Input** is a lightweight JavaScript plugin that detects input from most *plug-and-play* USB and Bluetooth hardware barcode or QR code scanners — which emulate keyboard input — and intelligently captures the scanned data into specified HTML form fields.
+**Scan-To-Input** is a lightweight JavaScript plugin that detects input from most _plug-and-play_ USB and Bluetooth hardware barcode or QR code scanners — which emulate keyboard input — and intelligently captures the scanned data into specified HTML form fields.
 
 In other words, it captures a scanned QR or barcode, and passes the value into an HTML `<input>` form element.
 
@@ -19,7 +19,6 @@ Scan-To-Input solves this by detecting:
 - **Rapid keystroke sequences**
 - **Alphanumeric patterns typical of barcodes**
 - And intelligently **redirecting the scanned value** into a defined set of form fields.
-
 
 ## Features
 
@@ -68,16 +67,15 @@ To ensure best results:
 
 If your scanner isn't working, try testing it in a plain text editor. If it "types" the barcode characters rapidly into the document, it should be compatible with this plugin.
 
-
 ## Demos
 
 You’ll find working examples in the `/demos/` folder. These are designed to demonstrate real-world use cases using basic HTML and Bootstrap 5 styling.
 
-| Filename                | Description |
-|-------------------------|-------------|
-| **basic-test.html** | 🧪 *Basic usage demo* – This is the recommended starting point. It shows how ScanDetect.js captures barcode or QR input and populates a single input field. Ideal for quick scanning into a form. |
-| **isbn-opener.html**    | 📖 *Book lookup via ISBN* – Demonstrates how to validate ISBN-10/13 and redirect users to a matching book on [Open Library](https://openlibrary.org). Useful for libraries, education, or research tools. |
-| **inventory-list.html** | 📦 *Dynamic inventory builder* – Adds a new row each time a valid barcode is scanned. Ideal for inventory tracking, stocktaking, or scanning items into a basket or manifest. |
+| Filename                | Description                                                                                                                                                                                               |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **basic-test.html**     | 🧪 _Basic usage demo_ – This is the recommended starting point. It shows how ScanDetect.js captures barcode or QR input and populates a single input field. Ideal for quick scanning into a form.         |
+| **isbn-opener.html**    | 📖 _Book lookup via ISBN_ – Demonstrates how to validate ISBN-10/13 and redirect users to a matching book on [Open Library](https://openlibrary.org). Useful for libraries, education, or research tools. |
+| **inventory-list.html** | 📦 _Dynamic inventory builder_ – Adds a new row each time a valid barcode is scanned. Ideal for inventory tracking, stocktaking, or scanning items into a basket or manifest.                             |
 
 You will need a USB or Bluetooth barcode scanner to test these examples. The [Inateck BCST-23](https://www.amazon.co.uk/Inateck-Wireless-Bluetooth-Handheld-BCST-21/dp/B0CJJ49MY1?crid=3V80IYLOP1MG&dib=eyJ2IjoiMSJ9.e_nyHBpEgo-FbtjQtGj38rrTkmSHFtP6U9gC6sB3_7M2iyLBSscZa794XXRwOgVoVT3o3BoHewFMu4qK8M34LyLDpBxKM_WiECnWopWsxJV_LyA_eOPiFEgjzndkY27470dAWi9aSY-JSm-Y_IC8D8KWIS8J5goYdk31Vlq9ZiAXzygWnCktyuJ0k1wFRkejD2YBZqsUk_kYn_MqkYPy9sfL_sd_V0-_iKQRVRZ4eAM.pS3ovzIhYhN6JKnhq3C6k6_lIGJSRI8hNX10v696TbU&dib_tag=se&keywords=bar%2Bcode%2Bscanner&qid=1750757594&sprefix=bar%2Bcode%2Bscanner%2Caps%2C88&sr=8-17&th=1) in one such example that works with this plugin, in both USB and
 
@@ -86,20 +84,20 @@ You will need a USB or Bluetooth barcode scanner to test these examples. The [In
 Simply include the script in your page:
 
 ```html
-<script src="scan-detect.js"></script>
+<script src="scan-to-input.js"></script>
 ```
 
 Then initialise the scanner detection:
 
 ```html
 <script>
-const scanner = new ScanDetect({
-  mode: 'append',
-  onScan: (value, input) => {
-    console.log('Scanned:', value);
-  },
-  validation: (code) => /^[A-Z0-9\-]{4,}$/.test(code)
-});
+  const scanner = new ScanDetect({
+    mode: 'append',
+    onScan: (value, input) => {
+      console.log('Scanned:', value);
+    },
+    validation: (code) => /^[A-Z0-9\-]{4,}$/.test(code),
+  });
 </script>
 ```
 
@@ -107,23 +105,28 @@ Give an HTML input box a `data` attribute of `data-scan-box` and optionally incl
 
 ```html
 <div class="position-relative mb-3">
-  <input type="text" class="form-control rounded-end" data-scan-box>
-  <button type="button" class="btn btn-link text-decoration-none" data-scan-remove>&times;</button>
+  <input type="text" class="form-control rounded-end" data-scan-box />
+  <button
+    type="button"
+    class="btn btn-link text-decoration-none"
+    data-scan-remove
+  >
+    &times;
+  </button>
 </div>
 ```
 
 ## Configuration Options
 
-| Option                | Type                        | Default             | Description                                                                                    |
-| --------------------- | --------------------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
-| `scanThreshold`       | `number`                    | `50`                | Maximum milliseconds allowed between keystrokes to qualify as a scan.                          |
-| `minLength`           | `number`                    | `3`                 | Minimum number of characters to trigger a scan. Prevents short accidental inputs.              |
-| `inputSelector`       | `string`                    | `"[data-scan-box]"` | CSS selector for target input fields.                                                          |
-| `clearButtonSelector` | `string`                    | `"[data-scan-remove]"`     | Selector for buttons that clear the associated input.                                          |
-| `mode`                | `"overwrite"` or `"append"` | `"overwrite"`       | - `overwrite`: Replace the value in the first input<br>- `append`: Fill the next empty input   |
-| `onScan`              | `function`                  | `null`              | Callback called when a scan is detected. Receives `(value, input)` as arguments.               |
-| `validation`          | `function`                  | `null`              | Optional function to validate scanned input before inserting. Should return `true` or `false`. |
-
+| Option                | Type                        | Default                | Description                                                                                    |
+| --------------------- | --------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------- |
+| `scanThreshold`       | `number`                    | `50`                   | Maximum milliseconds allowed between keystrokes to qualify as a scan.                          |
+| `minLength`           | `number`                    | `3`                    | Minimum number of characters to trigger a scan. Prevents short accidental inputs.              |
+| `inputSelector`       | `string`                    | `"[data-scan-box]"`    | CSS selector for target input fields.                                                          |
+| `clearButtonSelector` | `string`                    | `"[data-scan-remove]"` | Selector for buttons that clear the associated input.                                          |
+| `mode`                | `"overwrite"` or `"append"` | `"overwrite"`          | - `overwrite`: Replace the value in the first input<br>- `append`: Fill the next empty input   |
+| `onScan`              | `function`                  | `null`                 | Callback called when a scan is detected. Receives `(value, input)` as arguments.               |
+| `validation`          | `function`                  | `null`                 | Optional function to validate scanned input before inserting. Should return `true` or `false`. |
 
 ## Contributing
 
