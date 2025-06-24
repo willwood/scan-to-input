@@ -69,7 +69,7 @@ If your scanner isn't working, try testing it in a plain text editor. If it "typ
 
 ## Demos
 
-You’ll find working examples in the `/demos/` folder. These are designed to demonstrate real-world use cases using basic HTML and Bootstrap 5 styling.
+You’ll find working examples in the `/docs/` folder. These are designed to demonstrate real-world use cases using basic HTML and Bootstrap 5 styling.
 
 | Filename                | Description                                                                                                                                                                                               |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
