@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+</head>
+<body>
+    <main class="container my-5">
+        <h1>🧪 Basic Test</h1>
+        <p class="lead"><strong>This is the most minimal and clear demonstration</strong> of how the <code>ScanToInput.js</code> plugin works.</p>
+
+        <p>When a barcode or QR code is scanned, the plugin:</p>
+        <ul>
+            <li>Detects the rapid input pattern</li>
+            <li>Validates the input (if validation is enabled)</li>
+            <li>Populates the field marked with <code>data-scan-box</code></li>
+            <li>Optionally allows clearing the input for reuse</li>
+        </ul>
+
+        <p>This pattern is ideal for single-field scanning tasks, such as:</p>
+        <ul>
+            <li>Logging into a system with a badge</li>
+            <li>Checking in an item by unique code</li>
+            <li>Assigning a reference ID to a form submission</li>
+        </ul>
+        <form action="" class="my-5">
+            <label for="scan-box" class="form-label">Scan Code</label>
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upc-scan" viewBox="0 0 16 16">
+                        <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5M3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0z"/>
+                        </svg>
+                    </span>
+                    <input type="text" class="form-control rounded-end" id="scan-box" data-scan-box>
+                    <button class="btn btn-link text-decoration-none" data-scan-remove>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="Submit" class="btn btn-primary">
+                <input type="reset" value="Reset" class="btn btn-danger">
+            </div>
+        </form>
+    </main>
+    <script src="../scan-detect.js"></script>
+    <script>
+    const scanner = new ScanToInput({
+        mode: 'append',
+        onScan: (value, input) => {
+            input?.classList.add('is-valid');
+        },
+        validation: (code) => {
+            return /^[A-Z0-9\-]{4,}$/.test(code);
+        }
+    });
+    </script>
+
+</body>
+</html>

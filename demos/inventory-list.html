@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory List</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <main class="container my-5">
+    <h1 class="mb-3">📦 Inventory List</h1>
+    <p class="lead">Scan barcodes to automatically add them to the inventory list. Each scanned item creates a new input row. You can remove rows manually.</p>
+
+    <!-- Hidden scanner input -->
+    <input type="text" id="scan-box" data-scan-box class="visually-hidden" autocomplete="off">
+
+    <!-- Scanned items list -->
+    <form id="inventory-form">
+      <div id="scanned-items" class="input-group"></div>
+      <button type="submit" class="btn btn-primary mt-3">Submit Inventory To Database</button>
+    </form>
+  </main>
+
+  <script src="../scan-detect.js"></script>
+  <script>
+    let count = 0;
+
+    function isValidBarcode(code) {
+      // Accept EAN-13, UPC-A, or basic alphanumeric codes 6–14 digits long
+      return /^[A-Z0-9\-]{6,14}$/.test(code);
+    }
+
+    function addScannedItem(code) {
+      count++;
+      const container = document.getElementById('scanned-items');
+
+      const group = document.createElement('div');
+      group.className = 'input-group mb-2 scan-entry';
+      group.innerHTML = `
+        <input type="text" readonly name="item_${count}" class="form-control rounded-end" value="${code}">
+        <button class="btn btn-link text-decoration-none" data-scan-remove>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+        </button>
+      `;
+
+      group.querySelector('[data-scan-remove]').addEventListener('click', () => {
+        container.removeChild(group);
+      });
+
+      container.appendChild(group);
+    }
+
+    const scanner = new ScanToInput({
+      inputSelector: '[data-scan-box]',
+      scanThreshold: 50,
+      minLength: 6,
+      validation: isValidBarcode,
+      onScan: (code) => {
+        addScannedItem(code);
+      }
+    });
+
+    // Optional: keep focus on the hidden scan input
+    window.addEventListener('click', () => {
+      document.querySelector('[data-scan-box]').focus();
+    });
+
+    document.getElementById('inventory-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const items = Array.from(document.querySelectorAll('.scan-entry input')).map(i => i.value);
+      alert(`Submitting ${items.length} scanned items:\n\n` + items.join('\n'));
+    });
+  </script>
+</body>
+</html>

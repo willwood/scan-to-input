@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ISBN Opener</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .scan-result {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="container my-5">
+    <h1>📚 ISBN Opener</h1>
+    <p class="lead">Use a barcode or QR code scanner to enter an ISBN-10 or ISBN-13 code. If valid, the corresponding book will open automatically on <a href="https://openlibrary.org" target="_blank">Open Library</a>.</p>
+    <form action="" class="my-5">
+      <label for="scan-box" class="form-label">Scan Code</label>
+      <div class="mb-3">
+          <div class="input-group">
+              <span class="input-group-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upc-scan" viewBox="0 0 16 16">
+                  <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5M3 4.5a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0zm2 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 1 0v7a.5.5 0 0 1-1 0z"/>
+                  </svg>
+              </span>
+              <input type="text" class="form-control rounded-end" id="scan-box" data-scan-box>
+              <button class="btn btn-link text-decoration-none" data-scan-remove>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                  </svg>
+              </button>
+          </div>
+        </div>
+      <div class="mb-3">
+          <input type="submit" value="Submit" class="btn btn-primary">
+          <input type="reset" value="Reset" class="btn btn-danger">
+      </div>
+    </form>
+    <div id="scan-message" class="scan-result alert alert-success mt-4"></div>
+  </main>
+
+  <script src="../scan-detect.js"></script>
+  <script>
+    function isValidISBN(isbn) {
+      isbn = isbn.replace(/[^0-9X]/gi, '');
+      if (isbn.length === 10) {
+        let sum = 0;
+        for (let i = 0; i < 9; i++) sum += (10 - i) * parseInt(isbn.charAt(i));
+        let check = isbn.charAt(9).toUpperCase() === 'X' ? 10 : parseInt(isbn.charAt(9));
+        sum += check;
+        return sum % 11 === 0;
+      } else if (isbn.length === 13) {
+        let sum = 0;
+        for (let i = 0; i < 12; i++) {
+          sum += parseInt(isbn.charAt(i)) * (i % 2 === 0 ? 1 : 3);
+        }
+        let check = (10 - (sum % 10)) % 10;
+        return check === parseInt(isbn.charAt(12));
+      }
+      return false;
+    }
+
+    const scanner = new ScanToInput({
+      mode: 'overwrite',
+      inputSelector: '[data-scan-box]',
+      validation: isValidISBN,
+      onScan: (code, input) => {
+        input.value = code;
+        input.classList.add('is-valid');
+
+        const openLibraryURL = `https://openlibrary.org/isbn/${code}`;
+        const msg = document.getElementById('scan-message');
+        msg.innerHTML = `Opening book for ISBN <strong>${code}</strong>... <a href="${openLibraryURL}" class="ms-2" target="_blank">Open manually</a>`;
+        msg.style.display = 'block';
+
+        // Open the URL
+        window.open(openLibraryURL, '_blank');
+      }
+    });
+  </script>
+</body>
+</html>
